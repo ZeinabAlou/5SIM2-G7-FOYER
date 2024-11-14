@@ -74,6 +74,16 @@ public class FoyerService implements IFoyerService {
         u.setFoyer(f);
         return universiteRepository.save(u).getFoyer();
     }
+    @Override
+    public int calculerTauxOccupation(long idFoyer) {
+    Foyer foyer = findById(idFoyer);
+    List<Bloc> blocs = foyer.getBlocs();
+    int totalChambres = blocs.stream().mapToInt(Bloc::getNombreChambres).sum();
+    int chambresOccupees = blocs.stream()
+                                .mapToInt(bloc -> bloc.getReservations().size())
+                                .sum();
+    return (int) ((double) chambresOccupees / totalChambres * 100);
+}
 
     @Override
     public Foyer ajoutFoyerEtBlocs(Foyer foyer) {
